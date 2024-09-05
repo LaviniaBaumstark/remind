@@ -106,7 +106,7 @@ $offdelim
 p_developmentState(tall,all_regi) = f_developmentState(tall,all_regi,"%c_GDPpcScen%");
 
 
-*** Load information from BAU run
+*** Load information from start gdx for initional values
 Execute_Loadpoint 'input'      vm_cesIO, vm_invMacro;
 
 pm_gdp_gdx(ttot,regi)    = vm_cesIO.l(ttot,regi,"inco");
@@ -261,6 +261,9 @@ p_inco0(ttot,regi,te)               = s_DpKW_2_TDpTW       * p_inco0(ttot,regi,t
 fm_dataglob("inco0","csp")              = 0.7 * fm_dataglob("inco0","csp");
 fm_dataglob("incolearn","csp")          = 0.7 * fm_dataglob("incolearn","csp");
 
+*KK* adjust costs for oae from USD/GtCaO to USD/GtC
+fm_dataglob("inco0", "oae_ng") = fm_dataglob("inco0", "oae_ng") / (cm_33_OAE_eff / sm_c_2_co2);
+fm_dataglob("inco0", "oae_el") = fm_dataglob("inco0", "oae_el") / (cm_33_OAE_eff / sm_c_2_co2);
 
 *** --------------------------------------------------------------------------------
 *** Regionalize technology investment cost data
@@ -493,6 +496,7 @@ if (c_ccsinjecratescen eq 2, s_ccsinjecrate = s_ccsinjecrate *   0.50 ); !! Lowe
 if (c_ccsinjecratescen eq 3, s_ccsinjecrate = s_ccsinjecrate *   1.50 ); !! Upper estimate
 if (c_ccsinjecratescen eq 4, s_ccsinjecrate = s_ccsinjecrate * 200    ); !! remove flow constraint for DAC runs
 if (c_ccsinjecratescen eq 5, s_ccsinjecrate = s_ccsinjecrate *   0.20 ); !! sustainable estimate
+if (c_ccsinjecratescen eq 6, s_ccsinjecrate = s_ccsinjecrate *   0.44 ); !! Intermediate estimate
 pm_ccsinjecrate(regi) = s_ccsinjecrate;
 
 *** OR: overwrite with regional values of ccs injection rate
@@ -758,7 +762,7 @@ pm_regiEarlyRetiRate(t,regi,"biochp")  = 0.5 * pm_regiEarlyRetiRate(t,regi,"bioc
 pm_regiEarlyRetiRate(t,regi,"gashp")   = 0.5 * pm_regiEarlyRetiRate(t,regi,"gashp") ; !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
 pm_regiEarlyRetiRate(t,regi,"coalhp")  = 0.5 * pm_regiEarlyRetiRate(t,regi,"coalhp"); !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
 pm_regiEarlyRetiRate(t,regi,"biohp")   = 0.5 * pm_regiEarlyRetiRate(t,regi,"biohp") ; !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
-
+pm_regiEarlyRetiRate(t,regi,"bioigcc")   = 0.25 * pm_regiEarlyRetiRate(t,regi,"bioigcc") ; !! reduce bio early retirement rate
 
 $ifthen.tech_earlyreti not "%c_tech_earlyreti_rate%" == "off"
 loop((ext_regi,te)$p_techEarlyRetiRate(ext_regi,te),
@@ -889,7 +893,7 @@ if(pm_NuclearConstraint("2020",regi,"tnrs")<0,
 parameter pm_boundCapCCS(ttot,all_regi,bounds)        "installed and planned capacity of CCS"
 /
 $ondelim
-$include "./core/input/pm_boundCapCCS.cs4r"
+$include "./core/input/p_boundCapCCS.cs4r"
 $offdelim
 /
 ;
@@ -1000,12 +1004,12 @@ pm_shareWindPotentialOff2On(all_regi) = sum(rlf,f_maxProdGradeRegiWindOff(all_re
 
 pm_shareWindOff("2010",regi) = 0.05;
 pm_shareWindOff("2015",regi) = 0.1;
-pm_shareWindOff("2020",regi) = 0.15;
-pm_shareWindOff("2025",regi) = 0.2;
-pm_shareWindOff("2030",regi) = 0.35;
-pm_shareWindOff("2035",regi) = 0.5;
-pm_shareWindOff("2040",regi) = 0.65;
-pm_shareWindOff("2045",regi) = 0.8;
+pm_shareWindOff("2020",regi) = 0.2;
+pm_shareWindOff("2025",regi) = 0.4;
+pm_shareWindOff("2030",regi) = 0.6;
+pm_shareWindOff("2035",regi) = 0.8;
+pm_shareWindOff("2040",regi) = 0.9;
+pm_shareWindOff("2045",regi) = 0.95;
 pm_shareWindOff(ttot,regi)$((ttot.val ge 2050)) = 1;
 
 $endif.WindOff
@@ -1201,6 +1205,8 @@ loop(ttot$(ttot.val ge 2005),
   p_adj_seed_te(ttot,regi,"coalftcrec")      = 0.25;
   p_adj_seed_te(ttot,regi,"coaltr")          = 4.00;
   p_adj_seed_te(ttot,regi,'dac')             = 0.25;
+  p_adj_seed_te(ttot,regi,'oae_ng')          = 0.25;
+  p_adj_seed_te(ttot,regi,'oae_el')          = 0.25;
   p_adj_seed_te(ttot,regi,'geohe')           = 0.33;
 $ifthen.cm_subsec_model_steel "%cm_subsec_model_steel%" == "processes"
   p_adj_seed_te(ttot,regi,"bfcc")            = 0.05;
@@ -1248,6 +1254,8 @@ $ifthen.WindOff %cm_wind_offshore% == "1"
 $endif.WindOff
 
   p_adj_coeff(ttot,regi,"dac")             = 0.8;
+  p_adj_coeff(ttot,regi,'oae_ng')          = 0.8;
+  p_adj_coeff(ttot,regi,'oae_el')          = 0.8;
   p_adj_coeff(ttot,regi,teGrid)            = 0.3;
   p_adj_coeff(ttot,regi,teStor)            = 0.05;
 );

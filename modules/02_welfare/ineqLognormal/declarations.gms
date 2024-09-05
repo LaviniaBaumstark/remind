@@ -10,24 +10,23 @@
 ***                                   PARAMETERS
 ***-------------------------------------------------------------------------------
 parameters
-pm_welf(tall)                                     "Weight parameter in the welfare function to avoid jumps with cm_less_TS"
-pm_w(all_regi)                                    "Negishi weights"
-pm_prtp(all_regi)                                 "Pure rate of time preference"
+pm_welf(tall)                                      "Weight parameter in the welfare function to avoid jumps with cm_less_TS"
+pm_w(all_regi)                                     "Negishi weights"
+pm_prtp(all_regi)                                  "Pure rate of time preference"
 p02_cons_ref(ttot,all_regi)                        "consumption in reference run"
-p02_damageFactor_ref(ttot,all_regi)               "damage factor in reference run"
-p02_ineqTheil(ttot,all_regi)		                   "regional Theil-T index = sigma^2/2 for lognormal"
+p02_ineqTheil(ttot,all_regi)                       "regional Theil-T index = sigma^2/2 for lognormal"
 p02_distrMu(ttot,all_regi)                         "mu of lognormal distribution (prior to mitigation costs)"
 p02_distrSigma(ttot,all_regi)                      "sigma of lognormal distribution (prior to mitigation costs)"
 p02_distrAlpha(ttot,all_regi)                      "income elasticity of mitigation costs"
 p02_distrBeta(ttot,all_regi)                       "income elasticity of revenues redistribution"
 
-p02_taxrev_redistr0_ref(ttot,all_regi)             "tax revenue in the reference run"
-p02_energyExp_ref(ttot,all_regi)                     "regional energy expenditure in the reference scenario "
+p02_taxrev_redistr0_ref(ttot,all_regi)                 "tax revenue in the reference run"
+p02_energyExp_ref(ttot,all_regi)                       "regional energy expenditure in the reference scenario "
 p02_prodFe_ref(ttot,all_regi,all_enty,all_enty,all_te) "final energy in ref"
 
-p02_damConsFactor1(ttot,all_regi)		"factor translating output damages to consumption losses"
-p02_damConsFactor2(ttot,all_regi)		"factor translating output damages to consumption losses"
-pm_sccIneq(tall,all_regi)			"inequality term in SCC calculation"
+p02_damConsFactor1(ttot,all_regi)        "factor translating output damages to consumption losses"
+p02_damConsFactor2(ttot,all_regi)        "factor translating output damages to consumption losses"
+pm_sccIneq(tall,all_regi)                "inequality term in SCC calculation"
 
 $ifthen.inconv %cm_INCONV_PENALTY% == "on"
 p02_inconvpen_lap(ttot,all_regi,all_te)           "Parameter for inconvenience penalty for local air pollution. [T$/TWa at Consumption of 1000$/cap]"
@@ -51,7 +50,7 @@ v02_emitaxredistr(ttot,all_regi)                  "emissions that will be taxes 
 v02_revShare(ttot,all_regi)                       "tax revenues (share of consumption)"
 v02_energyExp_Add(ttot,all_regi)                  "additional energy expenditure w.r.t. reference run"
 v02_distrAlpha(ttot,all_regi)                     "income elasticity of mitigation costs"
-v02_damageConsShare(ttot,all_regi)		  "share of consumption loss from damages in consumption"
+v02_damageConsShare(ttot,all_regi)                "share of consumption loss from damages in consumption"
 
 
 $ifthen.inconv %cm_INCONV_PENALTY% == "on"
